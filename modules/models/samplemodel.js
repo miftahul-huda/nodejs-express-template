@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 
-class LoggerModel extends Model {
+class SampleModel extends Model {
     static initialize(sequelize, force=false)
     { 
         super.init({
@@ -11,8 +11,8 @@ class LoggerModel extends Model {
             logType: DataTypes.STRING,
             username: DataTypes.STRING
         }, 
-        { sequelize, modelName: 'logger', tableName: 'logger', force: force });
+        { sequelize, modelName: 'sample', tableName: 'sample', force: force });
     }
 }
 
-module.exports = LoggerModel;
+module.exports = SampleModel;

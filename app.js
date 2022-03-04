@@ -13,7 +13,8 @@ var Initialization = require("./initialization")
 
 
 const port = process.env.APPLICATION_PORT;
-console.log(port)
+const appTitle = process.env.APPLICATION_TITLE;
+//console.log(port)
 
 
 var ejs = require('ejs'); 
@@ -22,6 +23,12 @@ ejs.close = '}}';
 
 
 var app = express();
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 //Consider all request as application/json
 app.use(express.json({type: '*/*'}));
@@ -33,7 +40,7 @@ app.use(session({
     dataset: new Datastore(),
     kind: 'express-sessions',
   }),
-  secret: 'bankparserweb',saveUninitialized: true,resave: false}));
+  secret: 'levenshtein',saveUninitialized: true,resave: false}));
 
 //Dynamic routing based on configuration
 const fs = require('fs');
@@ -41,7 +48,15 @@ let rawdata = fs.readFileSync('route-config.json');
 let routers = JSON.parse(rawdata);
 routers.forEach(function (route){
   var r = require(route.router);
-  app.use(route.path,  r)
+  console.log("add route  : " + route.path + "");
+
+  let logic = route.logic;
+  if(logic != null)
+    logic = require(route.logic)
+
+  console.log(logic)
+  let newRouter = r.getRouter(logic);
+  app.use(route.path,  newRouter)
 })
 
 
@@ -80,12 +95,12 @@ app.use(function(err, req, res, next) {
 });
 
 
+
+
 app.listen(port)
 
+Initialization.initializeDatabase();
 
-
-//Initialization.initializeDatabase();
-
-console.log(process.env.APPLICATION_NAME + "server on  port : " + port)
+console.log(appTitle + " server on  port : " + port)
 
 module.exports = app;
