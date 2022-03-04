@@ -1,3 +1,3 @@
 [
-    { "path" :  "/samples", "router"  : "./routes/samples", "logic" : "./modules/logic/sample_logic" }
+    { "path" :  "/sample", "router"  : "./routes/sample", "logic" : "./modules/logic/sample_logic" }
 ]
