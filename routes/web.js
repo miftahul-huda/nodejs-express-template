@@ -11,6 +11,7 @@ class WebRouter {
     {
         var express = require('express');
         var router = express.Router();
+        const path = require('path');
         router.logic = logic;
         let me = this;
 
