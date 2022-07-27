@@ -21,7 +21,6 @@ class CrudLogic {
     static async create(o)
     {
         const CurrentModel = this.getModel();
-        console.log(CurrentModel);
 
         let result = this.validateCreate(o);
         if(result.success){
@@ -74,8 +73,6 @@ class CrudLogic {
                     where 
             ]}
 
-            console.log(opt)
-
             let os  = await CurrentModel.findAndCountAll(opt)
             return { success: true, payload: os }
         }
@@ -86,7 +83,6 @@ class CrudLogic {
     }
 
  
-
     static async findByKeyword(search, offset=null, limit=null)
     {
         let where = this.getWhere(search);
@@ -117,7 +113,7 @@ class CrudLogic {
 
     static async update(id,  o)
     {
-        let result = this.validateUpdate(log);
+        let result = this.validateUpdate(o);
         let pk = this.getPk();
         if(result.success){
             try {
