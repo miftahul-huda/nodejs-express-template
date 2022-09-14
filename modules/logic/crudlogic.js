@@ -20,6 +20,8 @@ class CrudLogic {
 
     static async create(o)
     {
+        o = initCreate(o);
+
         const CurrentModel = this.getModel();
 
         let result = this.validateCreate(o);
@@ -113,6 +115,8 @@ class CrudLogic {
 
     static async update(id,  o)
     {
+        o = initUpdate(o);
+
         let result = this.validateUpdate(o);
         let pk = this.getPk();
         if(result.success){
@@ -163,6 +167,16 @@ class CrudLogic {
     static validateUpdate(o)
     {   
         return {success :  true, message: "Succesfull"}
+    }
+
+    static initCreate(o)
+    {
+        return o;
+    }
+
+    static  initUpdate(o)
+    {
+        return o;
     }
 
 
