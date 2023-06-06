@@ -110,6 +110,29 @@ class CrudLogic {
         
     }
 
+
+    static async findByFilter(filter, offset=null, limit=null, order=null)
+    {
+        let where = this.getWhereFromFilter(filter);
+
+        console.log("findByFilter")
+        console.dir(where, { depth: null})
+
+        if(order == null)
+            order = this.getOrder();
+
+        try {
+
+            let result = await this.findAll( where, offset, limit, order);
+            return result
+        }
+        catch(error)
+        {
+            throw { success: false, message: '', error: error };
+        }
+        
+    }
+
     static async get(id)
     {
         try{
@@ -203,6 +226,76 @@ class CrudLogic {
     static getModelIncludes()
     {
         return null;
+    }
+
+    static getWhereFromFilter(filter)
+    {
+        console.log(filter)
+        let where = {
+            [Op.and]:[]
+        };
+
+        filter.map((item)=>{
+            let datafield = item.datafield;
+            let value = item.value;
+            if(item.operand == "equal")
+            {
+                let w = {};
+                w[item.datafield] = item.value;
+
+                console.log("w")
+                console.log(w)
+
+                where[Op.and].push(w);
+
+            }
+            else if(item.operand == "like")
+            {
+                let w = null;
+                let code = `w = { ${datafield} : {
+                    [Op.iLike] : '%${value}%'
+                }};`;
+
+                eval(code);
+                
+                console.log("w")
+                console.log(w)
+
+                where[Op.and].push(w);
+            }
+            else if(item.operand == "between")
+            {
+                let w = [];
+                let dts = item.value.split(" - ");
+                let dt1 = dts[0];
+                let dt2 = dts[1];
+                let wdt1 = [];
+                let wdt2 = [];
+
+                
+                wdt1[item.datafield] = {
+                    [Op.gte] : dt1
+                }
+                wdt2[item.datafield] = {
+                    [Op.lte] : dt2
+                }
+
+                let ww = {};
+                ww[item.datafield] = {
+                    [Op.between] : [dt1, dt2]
+                }
+
+                //ww[Op.and].push(wdt1)
+                //ww[Op.and].push(wdt2)
+
+                console.log("ww")
+                console.log(ww)
+
+                where[Op.and].push(ww);
+            }
+        });
+
+        return where;
     }
 }
 
