@@ -80,6 +80,10 @@ class CrudLogic {
             let includes = this.getModelIncludes();
             if(includes != null)
                 opt.include = includes;
+            
+            let attributes = this.getDefaultAttributes();
+            if(attributes != null)
+                opt.attributes = attributes;
                 
             let os  = await CurrentModel.findAndCountAll(opt)
             return { success: true, payload: os }
@@ -296,6 +300,11 @@ class CrudLogic {
         });
 
         return where;
+    }
+
+    static getDefaultAttributes()
+    {
+        return null;
     }
 }
 
