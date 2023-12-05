@@ -141,7 +141,18 @@ class CrudLogic {
     {
         try{
             const CurrentModel = this.getModel();
-            let o  = await CurrentModel.findByPk(id);
+            let pkField = this.getPk();
+            let where = {};
+            where[pkField] = id;
+
+            let opt = {};
+            opt.where = where;
+
+            let includes = this.getModelIncludes();
+            if(includes != null)
+                opt.include = includes;
+
+            let o  = await CurrentModel.findOne(opt);
             return { success: true, payload: o }
         }
         catch (error)
