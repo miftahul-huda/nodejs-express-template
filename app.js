@@ -8,6 +8,8 @@ var bodyParser = require('body-parser')
 const session = require('express-session');
 const {Datastore} = require('@google-cloud/datastore');
 const {DatastoreStore} = require('@google-cloud/connect-datastore');
+var cors = require('cors')
+
 
 var Initialization = require("./initialization")
 
@@ -30,17 +32,23 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(cors());
+
+
 //Consider all request as application/json
 app.use(express.json({type: '*/*'}));
 // parse application/json
 app.use(bodyParser.json())
 
+/* uncomment this if session is needed */
+/*
 app.use(session({
   store: new DatastoreStore({
     dataset: new Datastore(),
     kind: 'express-sessions',
   }),
   secret: 'levenshtein',saveUninitialized: true,resave: false}));
+*/
 
 //Dynamic routing based on configuration
 const fs = require('fs');
@@ -84,6 +92,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
+/*
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
@@ -93,8 +102,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
+*/
 
 
 app.listen(port)
