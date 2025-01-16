@@ -55,17 +55,40 @@ class CrudRouter {
             let offset = req.query.offset;
             let limit = req.query.limit;
             let sort = req.query.sort;
+            let filter = req.query.filter;
+            if(filter != null)
+            {
+                filter = atob(filter);
+                filter = JSON.parse(filter);
+            }
 
             let orderArr = me.sortToArray(sort)
 
-            logic.findByKeyword(search, offset, limit, orderArr).then(function (os)
+            if(filter == null)
             {
-                res.send(os);
-            }).catch(function (err){
-                console.log("error")
-                console.log(err)
-                res.send(err);
-            })
+                logic.findByKeyword(search, offset, limit, orderArr).then(function (os)
+                {
+                    res.send(os);
+                }).catch(function (err){
+                    console.log("error")
+                    console.log(err)
+                    res.send(err);
+                })
+
+            }
+            else
+            {
+
+                logic.findByFilter(filter, offset, limit, orderArr).then(function (os)
+                {
+                    res.send(os);
+                }).catch(function (err){
+                    console.log("error")
+                    console.log(err)
+                    res.send(err);
+                })
+            }
+
         })
 
 
